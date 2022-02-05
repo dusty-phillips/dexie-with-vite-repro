@@ -1,9 +1,15 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { useLiveQuery } from "dexie-react-hooks";
+
+import logo from "./logo.svg";
+import "./App.css";
+import { useDexie } from "./database";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const db = useDexie();
+  const counter = useLiveQuery(
+    async () => await db.count.toCollection().last()
+  );
+  const count = counter ? counter.count : 0;
 
   return (
     <div className="App">
@@ -11,7 +17,10 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello Vite + React!</p>
         <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
+          <button
+            type="button"
+            onClick={() => db.count.add({ count: count + 1 })}
+          >
             count is: {count}
           </button>
         </p>
@@ -27,7 +36,7 @@ function App() {
           >
             Learn React
           </a>
-          {' | '}
+          {" | "}
           <a
             className="App-link"
             href="https://vitejs.dev/guide/features.html"
@@ -39,7 +48,7 @@ function App() {
         </p>
       </header>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
