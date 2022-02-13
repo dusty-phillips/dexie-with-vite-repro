@@ -19,7 +19,15 @@ function App() {
         <p>
           <button
             type="button"
-            onClick={() => db.count.add({ count: count + 1 })}
+            onClick={() => {
+              console.log("About to add");
+              // This promise never resolves, catches, or finallys
+              db.count
+                .add({ count: count + 1 })
+                .then((i) => console.log("Count Success", i))
+                .catch((e) => console.log("Count failure", e))
+                .finally(() => console.log("Count finally"));
+            }}
           >
             count is: {count}
           </button>
